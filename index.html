@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Harry Potter Grammar Quest — Entertainment & Media</title>
+<style>
+:root {
+  --gold: #d4af37;
+  --deep: #1a0a2e;
+  --burgundy: #6b1e23;
+  --parchment: #f4e8c1;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  background: linear-gradient(160deg, #0d0518 0%, #1a0a2e 40%, #2d1b4e 100%);
+  color: var(--parchment);
+  min-height: 100vh;
+  padding: 12px;
+  line-height: 1.5;
+}
+.container {
+  max-width: 520px;
+  margin: 0 auto;
+  background: rgba(26, 10, 46, 0.92);
+  border: 3px solid var(--gold);
+  border-radius: 16px;
+  padding: 20px 16px;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+}
+h1, h2, h3 {
+  color: var(--gold);
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+}
+h1 { font-size: 1.55rem; margin-bottom: 8px; }
+h2 { font-size: 1.3rem; margin: 12px 0; }
+.subtitle { text-align: center; font-style: italic; margin-bottom: 16px; color: #e8d5a3; }
+.score-bar {
+  display: flex;
+  justify-content: space-between;
+  background: rgba(107, 30, 35, 0.6);
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-weight: bold;
+  border: 1px solid var(--gold);
+}
+.btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  margin: 8px 0;
+  background: linear-gradient(180deg, #8b3a3a, #6b1e23);
+  color: var(--parchment);
+  border: 2px solid var(--gold);
+  border-radius: 10px;
+  font-size: 1.05rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.btn:active { transform: scale(0.98); }
+.btn:disabled, .btn.completed {
+  background: #3a2a4a;
+  color: #888;
+  border-color: #555;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.btn-secondary {
+  background: linear-gradient(180deg, #3d2a5c, #2d1b4e);
+}
+.nav-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.nav-btns .btn { margin: 0; flex: 1; min-width: 100px; font-size: 0.95rem; padding: 12px; }
+.rule-box {
+  background: rgba(244, 232, 193, 0.12);
+  border-left: 4px solid var(--gold);
+  padding: 12px;
+  margin: 12px 0;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.95rem;
+}
+.question { font-size: 1.1rem; margin: 14px 0; font-weight: bold; }
+.options button { text-align: left; margin: 6px 0; }
+.feedback {
+  margin: 12px 0;
+  padding: 14px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1.05rem;
+}
+.correct { background: rgba(46, 125, 50, 0.45); border: 2px solid #4caf50; }
+.wrong { background: rgba(183, 28, 28, 0.45); border: 2px solid #ef5350; }
+.hidden { display: none; }
+.progress { height: 6px; background: #3d2a5c; border-radius: 3px; margin: 10px 0; overflow: hidden; }
+.progress-bar { height: 100%; background: var(--gold); transition: width 0.3s; }
+.final-score { font-size: 2.2rem; color: var(--gold); text-align: center; margin: 16px 0; }
+.station-img {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin: 10px 0;
+  border: 2px solid var(--gold);
+}
+.badge { font-size: 0.8rem; background: #4caf50; color: white; padding: 2px 8px; border-radius: 10px; margin-left: 6px; }
+.name-input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  font-size: 1.1rem;
+  background: rgba(244, 232, 193, 0.15);
+  color: var(--parchment);
+  text-align: center;
+}
+.certificate {
+  background: linear-gradient(135deg, #2d1b4e, #1a0a2e);
+  border: 4px double var(--gold);
+  border-radius: 16px;
+  padding: 24px 16px;
+  margin: 16px 0;
+  text-align: center;
+}
+.certificate h3 { font-size: 1.4rem; margin-bottom: 8px; }
+.cert-name { font-size: 1.6rem; color: var(--gold); margin: 12px 0; font-weight: bold; }
+.cert-score { font-size: 1.3rem; margin: 8px 0; }
+</style>
+</head>
+<body>
+<div class="container" id="app">
+  <!-- NAME ENTRY -->
+  <div id="nameEntry" class="screen">
+    <h1>⚡ Harry Potter<br>Grammar Quest</h1>
+    <p class="subtitle">Present Perfect Simple & Continuous<br>Entertainment and Media</p>
+    <img class="station-img" src="https://theparkprodigy.com/wp-content/uploads/2021/08/dreamstime_s_17558247.jpg" alt="Hogwarts" onerror="this.style.display='none'">
+    <p style="text-align:center; margin:12px 0;">Введи своё имя, юный волшебник:</p>
+    <input type="text" id="studentName" class="name-input" placeholder="Твоё имя" maxlength="30">
+    <button class="btn" onclick="startGame()">Начать квест</button>
+  </div>
+
+  <div id="home" class="screen hidden">
+    <h1>⚡ Harry Potter<br>Grammar Quest</h1>
+    <p class="subtitle">Present Perfect Simple & Continuous<br>Entertainment and Media</p>
+    <div class="score-bar">
+      <span>Баллы: <span id="totalScore">0</span></span>
+      <span>Станция: <span id="currentStationLabel">Главная</span></span>
+    </div>
+    <p style="text-align:center; margin-bottom:10px;">Привет, <strong id="displayName">ученик</strong>!</p>
+    <div class="station-list" id="stationButtons">
+      <button class="btn" id="btn-explain" onclick="goToStation('explain')">1. Сортировочная шляпа<br><small>Объяснение правил</small></button>
+      <button class="btn" id="btn-simple" onclick="goToStation('simple')">2. Платформа 9¾<br><small>Present Perfect Simple</small></button>
+      <button class="btn" id="btn-continuous" onclick="goToStation('continuous')">3. Большой зал<br><small>Present Perfect Continuous</small></button>
+      <button class="btn" id="btn-mixed" onclick="goToStation('mixed')">4. Поле для квиддича<br><small>Смешанные задания</small></button>
+      <button class="btn" id="btn-final" onclick="goToStation('final')">5. Финальный вызов<br><small>Итоговые упражнения</small></button>
+    </div>
+    <p style="text-align:center; margin-top:12px; font-size:0.9rem; opacity:0.85;">
+      Тема: Entertainment and media (фильмы, музыка, книги, сериалы).<br>
+      Пройденные станции нельзя пройти заново.
+    </p>
+    <button class="btn btn-secondary" style="margin-top:10px;" onclick="showResults()">Посмотреть результаты</button>
+  </div>
+
+  <!-- EXPLANATION -->
+  <div id="explain" class="screen hidden">
+    <h2>🎩 Сортировочная шляпа</h2>
+    <p class="subtitle">Сначала изучи правила</p>
+    <div class="rule-box">
+      <strong>Present Perfect Simple</strong><br>
+      Формула: <em>have/has + V3</em><br><br>
+      Используем:<br>
+      • Опыт в жизни<br>
+      • Завершённое действие с результатом сейчас<br>
+      • already, yet, just, ever, never, recently<br><br>
+      Пример: I <strong>have watched</strong> this film three times.
+    </div>
+    <div class="rule-box">
+      <strong>Present Perfect Continuous</strong><br>
+      Формула: <em>have/has been + V-ing</em><br><br>
+      Используем:<br>
+      • Действие продолжается до сих пор<br>
+      • Акцент на длительности (for, since, how long)<br>
+      • Недавняя деятельность с видимым результатом<br><br>
+      Пример: She <strong>has been listening</strong> to this album all evening.
+    </div>
+    <div class="nav-btns">
+      <button class="btn" onclick="goToStation('simple')">Вперёд →</button>
+    </div>
+  </div>
+
+  <!-- SIMPLE -->
+  <div id="simple" class="screen hidden">
+    <h2>🚂 Платформа 9¾</h2>
+    <p class="subtitle">Present Perfect Simple — Entertainment</p>
+    <div class="progress"><div class="progress-bar" id="progSimple" style="width:0%"></div></div>
+    <div id="simpleContent"></div>
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goToStation('explain')">← Назад</button>
+      <button class="btn" id="fwd-simple" onclick="goNext('simple')">Вперёд →</button>
+    </div>
+  </div>
+
+  <!-- CONTINUOUS -->
+  <div id="continuous" class="screen hidden">
+    <h2>🍽️ Большой зал</h2>
+    <p class="subtitle">Present Perfect Continuous — Media</p>
+    <div class="progress"><div class="progress-bar" id="progCont" style="width:0%"></div></div>
+    <div id="contContent"></div>
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goToStation('simple')">← Назад</button>
+      <button class="btn" id="fwd-continuous" onclick="goNext('continuous')">Вперёд →</button>
+    </div>
+  </div>
+
+  <!-- MIXED -->
+  <div id="mixed" class="screen hidden">
+    <h2>🧹 Поле для квиддича</h2>
+    <p class="subtitle">Смешанные задания</p>
+    <div class="progress"><div class="progress-bar" id="progMixed" style="width:0%"></div></div>
+    <div id="mixedContent"></div>
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goToStation('continuous')">← Назад</button>
+      <button class="btn" id="fwd-mixed" onclick="goNext('mixed')">Вперёд →</button>
+    </div>
+  </div>
+
+  <!-- FINAL -->
+  <div id="final" class="screen hidden">
+    <h2>🏆 Финальный вызов</h2>
+    <p class="subtitle">Entertainment & Media</p>
+    <div class="progress"><div class="progress-bar" id="progFinal" style="width:0%"></div></div>
+    <div id="finalContent"></div>
+    <div class="nav-btns">
+      <button class="btn btn-secondary" onclick="goToStation('mixed')">← Назад</button>
+      <button class="btn" onclick="showResults()">Результаты</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results" class="screen hidden">
+    <h2>✨ Результаты квеста</h2>
+    <div class="final-score" id="finalScoreDisplay">0</div>
+    <p style="text-align:center;" id="rankText"></p>
+    <div id="scoreDetails" style="text-align:center; margin:12px 0; font-size:1.05rem;"></div>
+    <div id="stationScores" style="margin:16px 0;"></div>
+    <button class="btn" onclick="showCertificate()">Сертификат</button>
+    <button class="btn btn-secondary" onclick="resetGame()">Начать заново</button>
+    <button class="btn btn-secondary" onclick="goHome()">На главную</button>
+  </div>
+
+  <!-- CERTIFICATE -->
+  <div id="certificate" class="screen hidden">
+    <div class="certificate">
+      <h3>🏆 Сертификат</h3>
+      <p>Hogwarts School of Witchcraft and Wizardry</p>
+      <p style="margin:8px 0;">Present Perfect Grammar Quest</p>
+      <div class="cert-name" id="certName">Имя ученика</div>
+      <div class="cert-score" id="certScore">Баллы: 0 / 210</div>
+      <p id="certRank" style="margin-top:10px; font-style:italic;"></p>
+      <p style="margin-top:16px; font-size:0.9rem; opacity:0.8;">Entertainment and Media • 8 класс</p>
+    </div>
+    <button class="btn btn-secondary" onclick="showResults()">← Назад к результатам</button>
+  </div>
+</div>
+
+<script>
+const POINTS_PER_CORRECT = 10;
+const MAX_SCORE = 210; // 5+5+5+6 questions * 10
+const PASSING_SCORE = 126; // 60%
+let totalScore = 0;
+let studentName = '';
+const stationScores = { simple: 0, continuous: 0, mixed: 0, final: 0 };
+const completedStations = { simple: false, continuous: false, mixed: false, final: false };
+
+const stationOrder = ['explain', 'simple', 'continuous', 'mixed', 'final'];
+
+const questions = {
+  simple: [
+    {
+      q: "I ___ already ___ this series on Netflix three times.",
+      options: ["have / watched", "have been watching", "watched", "am watching"],
+      answer: 0,
+      tip: "already + completed experience → Present Perfect Simple."
+    },
+    {
+      q: "Have you ever ___ a live concert?",
+      options: ["seen", "been seeing", "saw", "see"],
+      answer: 0,
+      tip: "ever (опыт в жизни) → Simple."
+    },
+    {
+      q: "She ___ just ___ the new Taylor Swift album.",
+      options: ["has / downloaded", "has been downloading", "downloaded", "is downloading"],
+      answer: 0,
+      tip: "just → Simple."
+    },
+    {
+      q: "They ___ not ___ the film yet. The cinema is still open.",
+      options: ["have / seen", "have been seeing", "saw", "are seeing"],
+      answer: 0,
+      tip: "yet → Present Perfect Simple."
+    },
+    {
+      q: "How many books ___ you ___ this year?",
+      options: ["have / read", "have been reading", "did / read", "are / reading"],
+      answer: 0,
+      tip: "How many (количество завершённых) → Simple."
+    }
+  ],
+  continuous: [
+    {
+      q: "I ___ this podcast for two hours.",
+      options: ["have been listening to", "have listened to", "listened to", "am listening to"],
+      answer: 0,
+      tip: "for two hours (длительность) → Continuous."
+    },
+    {
+      q: "How long ___ you ___ TikTok videos today?",
+      options: ["have / been watching", "have / watched", "did / watch", "are / watching"],
+      answer: 0,
+      tip: "How long + ongoing → Continuous."
+    },
+    {
+      q: "The band ___ their new song all morning.",
+      options: ["have been rehearsing", "have rehearsed", "rehearsed", "are rehearsing"],
+      answer: 0,
+      tip: "all morning — процесс."
+    },
+    {
+      q: "She looks tired. She ___ films all night.",
+      options: ["has been watching", "has watched", "watched", "watches"],
+      answer: 0,
+      tip: "Видимый результат недавней деятельности."
+    },
+    {
+      q: "We ___ for the concert tickets since 9 a.m.",
+      options: ["have been waiting", "have waited", "waited", "are waiting"],
+      answer: 0,
+      tip: "since + ongoing → Continuous."
+    }
+  ],
+  mixed: [
+    {
+      q: "I ___ this book for a week, but I ___ it yet.",
+      options: [
+        "have been reading / haven't finished",
+        "have read / haven't been finishing",
+        "read / didn't finish",
+        "am reading / don't finish"
+      ],
+      answer: 0,
+      tip: "Процесс (for) + завершение (yet)."
+    },
+    {
+      q: "She ___ already ___ three new songs today.",
+      options: ["has / written", "has been writing", "wrote", "is writing"],
+      answer: 0,
+      tip: "already → Simple."
+    },
+    {
+      q: "They ___ music together since they were teenagers.",
+      options: ["have been making", "have made", "made", "make"],
+      answer: 0,
+      tip: "since + ongoing habit → Continuous."
+    },
+    {
+      q: "___ you ___ the latest Marvel film? Everyone is talking about it.",
+      options: ["Have / seen", "Have / been seeing", "Did / see", "Are / seeing"],
+      answer: 0,
+      tip: "Результат важен сейчас."
+    },
+    {
+      q: "It ___ all evening. The outdoor concert might be cancelled.",
+      options: ["has been raining", "has rained", "rained", "is raining"],
+      answer: 0,
+      tip: "all evening + result → Continuous."
+    }
+  ],
+  final: [
+    {
+      q: "My favourite YouTuber ___ videos for five years.",
+      options: ["has been making", "has made", "made", "makes"],
+      answer: 0,
+      tip: "for five years — длительность."
+    },
+    {
+      q: "I ___ never ___ such a good soundtrack.",
+      options: ["have / heard", "have been hearing", "heard", "hear"],
+      answer: 0,
+      tip: "never + experience → Simple."
+    },
+    {
+      q: "How many episodes ___ you ___ of this series so far?",
+      options: ["have / watched", "have been watching", "did / watch", "are / watching"],
+      answer: 0,
+      tip: "How many completed → Simple."
+    },
+    {
+      q: "She ___ her playlist for three hours and still hasn't finished it.",
+      options: ["has been creating", "has created", "created", "is creating"],
+      answer: 0,
+      tip: "Процесс продолжается."
+    },
+    {
+      q: "We ___ just ___ the trailer for the new film.",
+      options: ["have / seen", "have been seeing", "saw", "are seeing"],
+      answer: 0,
+      tip: "just → Simple."
+    },
+    {
+      q: "The actors ___ this play since January.",
+      options: ["have been rehearsing", "have rehearsed", "rehearsed", "rehearse"],
+      answer: 0,
+      tip: "since January, ongoing → Continuous."
+    }
+  ]
+};
+
+let currentStation = null;
+let currentQIndex = 0;
+let answered = false;
+
+function updateScore() {
+  document.getElementById('totalScore').textContent = totalScore;
+}
+
+function startGame() {
+  const nameInput = document.getElementById('studentName');
+  studentName = nameInput.value.trim() || 'Ученик';
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('nameEntry').classList.add('hidden');
+  goHome();
+}
+
+function updateHomeButtons() {
+  ['simple', 'continuous', 'mixed', 'final'].forEach(st => {
+    const btn = document.getElementById('btn-' + st);
+    if (btn && completedStations[st]) {
+      btn.classList.add('completed');
+      btn.disabled = true;
+      if (!btn.innerHTML.includes('✓')) {
+        btn.innerHTML += ' <span class="badge">✓ Пройдено</span>';
+      }
+    }
+  });
+}
+
+function goHome() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  document.getElementById('home').classList.remove('hidden');
+  document.getElementById('currentStationLabel').textContent = 'Главная';
+  updateHomeButtons();
+}
+
+function goNext(from) {
+  const idx = stationOrder.indexOf(from);
+  if (idx >= 0 && idx < stationOrder.length - 1) {
+    const next = stationOrder[idx + 1];
+    if (next !== 'explain' && completedStations[next]) {
+      alert('Эта станция уже пройдена. Выбери другую или посмотри результаты.');
+      return;
+    }
+    goToStation(next);
+  }
+}
+
+function goToStation(station) {
+  if (station !== 'explain' && completedStations[station]) {
+    alert('Эта станция уже пройдена! Нельзя пройти её заново.');
+    return;
+  }
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  document.getElementById(station).classList.remove('hidden');
+  currentStation = station;
+  const labels = {
+    explain: 'Правила',
+    simple: 'Платформа 9¾',
+    continuous: 'Большой зал',
+    mixed: 'Квиддич',
+    final: 'Финал'
+  };
+  document.getElementById('currentStationLabel').textContent = labels[station] || station;
+  if (station !== 'explain') {
+    currentQIndex = 0;
+    answered = false;
+    renderQuestion(station);
+  }
+}
+
+function shuffleArray(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function renderQuestion(station) {
+  const qs = questions[station];
+  if (currentQIndex >= qs.length) {
+    showStationComplete(station);
+    return;
+  }
+  const q = qs[currentQIndex];
+  const containerId = station === 'simple' ? 'simpleContent' :
+                      station === 'continuous' ? 'contContent' :
+                      station === 'mixed' ? 'mixedContent' : 'finalContent';
+  const container = document.getElementById(containerId);
+
+  // Shuffle options and remember the new correct index
+  const indexedOptions = q.options.map((opt, i) => ({ text: opt, isCorrect: i === q.answer }));
+  const shuffled = shuffleArray(indexedOptions);
+  const correctIndex = shuffled.findIndex(item => item.isCorrect);
+
+  // Store for checking
+  q._shuffled = shuffled;
+  q._correctIndex = correctIndex;
+
+  let html = `<div class="question">${currentQIndex + 1}. ${q.q}</div><div class="options">`;
+  shuffled.forEach((item, i) => {
+    html += `<button class="btn" onclick="checkAnswer(${i}, '${station}')">${item.text}</button>`;
+  });
+  html += `</div><div id="feedback-${station}" class="feedback" style="display:none;"></div>`;
+  container.innerHTML = html;
+  updateProgress(station);
+}
+
+function checkAnswer(selected, station) {
+  if (answered) return;
+  answered = true;
+  const q = questions[station][currentQIndex];
+  const feedback = document.getElementById('feedback-' + station);
+  const buttons = document.querySelectorAll(`#${station} .options button`);
+  buttons.forEach(b => b.disabled = true);
+
+  feedback.style.display = 'block';
+  const correctText = q._shuffled[q._correctIndex].text;
+
+  if (selected === q._correctIndex) {
+    feedback.className = 'feedback correct';
+    feedback.innerHTML = '✅ Верно! +' + POINTS_PER_CORRECT + ' баллов';
+    totalScore += POINTS_PER_CORRECT;
+    stationScores[station] += POINTS_PER_CORRECT;
+    updateScore();
+  } else {
+    feedback.className = 'feedback wrong';
+    feedback.innerHTML = `❌ Неверно.<br>Правильный ответ: <strong>${correctText}</strong><br><small>${q.tip}</small>`;
+  }
+
+  setTimeout(() => {
+    currentQIndex++;
+    answered = false;
+    renderQuestion(station);
+  }, 2500);
+}
+
+function updateProgress(station) {
+  const percent = (currentQIndex / questions[station].length) * 100;
+  const barId = station === 'simple' ? 'progSimple' :
+                station === 'continuous' ? 'progCont' :
+                station === 'mixed' ? 'progMixed' : 'progFinal';
+  const bar = document.getElementById(barId);
+  if (bar) bar.style.width = percent + '%';
+}
+
+function showStationComplete(station) {
+  completedStations[station] = true;
+  const containerId = station === 'simple' ? 'simpleContent' :
+                      station === 'continuous' ? 'contContent' :
+                      station === 'mixed' ? 'mixedContent' : 'finalContent';
+  const container = document.getElementById(containerId);
+  container.innerHTML = `
+    <div class="feedback correct" style="font-size:1.1rem; display:block;">
+      Станция пройдена!<br>
+      Заработано на этой станции: <strong>${stationScores[station]}</strong> баллов
+    </div>
+    <button class="btn" onclick="goHome()">Вернуться на главную</button>
+  `;
+  const barId = station === 'simple' ? 'progSimple' :
+                station === 'continuous' ? 'progCont' :
+                station === 'mixed' ? 'progMixed' : 'progFinal';
+  const bar = document.getElementById(barId);
+  if (bar) bar.style.width = '100%';
+  updateHomeButtons();
+}
+
+function showResults() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  document.getElementById('results').classList.remove('hidden');
+  document.getElementById('finalScoreDisplay').textContent = totalScore;
+
+  let rank = '';
+  if (totalScore >= 180) rank = '🏆 Ты настоящий мастер заклинаний! Outstanding!';
+  else if (totalScore >= 120) rank = '⭐ Отличная работа! Exceeds Expectations';
+  else if (totalScore >= PASSING_SCORE) rank = '👍 Хорошо! Acceptable';
+  else rank = '📚 Продолжай тренироваться, юный волшебник!';
+  document.getElementById('rankText').textContent = rank;
+
+  document.getElementById('scoreDetails').innerHTML = `
+    Твой результат: <strong>${totalScore}</strong> из <strong>${MAX_SCORE}</strong><br>
+    Для зачёта нужно: <strong>${PASSING_SCORE}</strong> баллов (60%)
+  `;
+
+  let scoresHtml = '<h3 style="color:var(--gold);text-align:center;">Баллы по станциям</h3>';
+  const names = { simple: 'Платформа 9¾', continuous: 'Большой зал', mixed: 'Квиддич', final: 'Финал' };
+  for (let s in stationScores) {
+    scoresHtml += `<p style="margin:6px 0;">${names[s]}: <strong>${stationScores[s]}</strong> ${completedStations[s] ? '✓' : ''}</p>`;
+  }
+  document.getElementById('stationScores').innerHTML = scoresHtml;
+}
+
+function showCertificate() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  document.getElementById('certificate').classList.remove('hidden');
+  document.getElementById('certName').textContent = studentName;
+  document.getElementById('certScore').textContent = `Баллы: ${totalScore} / ${MAX_SCORE}`;
+  let rankText = '';
+  if (totalScore >= 180) rankText = 'Outstanding!';
+  else if (totalScore >= 120) rankText = 'Exceeds Expectations';
+  else if (totalScore >= PASSING_SCORE) rankText = 'Acceptable';
+  else rankText = 'Needs practice';
+  document.getElementById('certRank').textContent = rankText;
+}
+
+function resetGame() {
+  totalScore = 0;
+  studentName = '';
+  for (let k in stationScores) stationScores[k] = 0;
+  for (let k in completedStations) completedStations[k] = false;
+  updateScore();
+  document.getElementById('studentName').value = '';
+  ['simple', 'continuous', 'mixed', 'final'].forEach(st => {
+    const btn = document.getElementById('btn-' + st);
+    if (btn) {
+      btn.classList.remove('completed');
+      btn.disabled = false;
+      btn.innerHTML = btn.innerHTML.replace(/ <span class="badge">.*?<\/span>/, '');
+    }
+  });
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  document.getElementById('nameEntry').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
